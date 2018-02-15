@@ -1,0 +1,15 @@
+{
+  "parser": "babel-eslint",
+  "rules": {
+    "comma-dangle": 0,
+    "brace-style": [1],
+    "no-console": 0,
+    "padded-blocks": 0,
+    "indent": ["off"],
+    "spaced-comment": 1,
+    "quotes": ["off", "single", { "allowTemplateLiterals": true }],
+    "import/prefer-default-export": "off",
+    "arrow-parens": ["error", "as-needed"]
+    
+  }
+}

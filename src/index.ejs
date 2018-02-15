@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <% if (!htmlWebpackPlugin.options.MODE_DEV_SERVER) { %><link href="<%= webpack.assetsByChunkName['main'][1] %>" rel="stylesheet"><% } %>
+</head>
+<body class="babel">
+
+
+<% if (htmlWebpackPlugin.options.DEVTOOLS !== null) { %>
+<!-- This part will appear if you set DEVTOOLS=true or DEVTOOLS=false when launching an npm task -->
+  <% if (!htmlWebpackPlugin.options.DEVTOOLS) { %>
+  <p><a href="./devtools/" title="Test the version with sourcemaps!">Just click here to see the what's under the hood</a>.</p>
+  <% } else { %>
+  <p class="crop">This is the <strong>Developer version</strong>, containing sourcemaps. <strong>Open your devtools and read/set breakpoints on the original source code!</strong></p>
+  <p><a href="../" title="Back to the production version">Back to the production version</a></p>
+  <% } %>
+<% } %>
+
+  <!-- CONTENT BODY -->
+  <div id="my-webgl-output"></div>
+  <div id="my-stats-output"></div>
+
+
+<!-- keep the following lines -->
+<% if (!htmlWebpackPlugin.options.MODE_DEV_SERVER) { %><script src="<%= Object.prototype.toString.call(webpack.assetsByChunkName['bundle']) === '[object Array]' ? webpack.assetsByChunkName['bundle'][0] : webpack.assetsByChunkName['bundle'] %>"></script><% } %>
+
+</body>
+</html><%= htmlWebpackPlugin.options.BANNER_HTML %>
