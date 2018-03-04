@@ -12,13 +12,19 @@ import {
   Vector3,
   Mesh,
   Color,
-  SphereGeometry
+  SphereGeometry,
+  Triangle,
+  Geometry,
+  Face3,
+  MeshNormalMaterial,
+  Object3D,
+  FogExp2
 } from "three";
 import { Stats } from "three-stats";
 import dat from "dat.gui";
-import autobind from 'autobind-decorator'
+import autobind from "autobind-decorator";
 
-export class Feb12 {
+export class Feb15 {
   constructor() {
     this.scene = new Scene();
 
@@ -34,7 +40,7 @@ export class Feb12 {
     this.renderer.setClearColor();
     this.renderer.setClearColor(new Color(0xbbffbb));
     this.renderer.setSize(800, 600);
-    this.renderer.shadowMap.enabled = true
+    this.renderer.shadowMap.enabled = true;
 
     // Stats
     this.stats = new Stats();
@@ -42,6 +48,16 @@ export class Feb12 {
     // other vars
     this.frameCount = 0;
     this.main();
+  }
+
+  main() {
+    this.generateGUI();
+    this.addBuildings();
+    this.addObjects();
+    this.addLights();
+    this.addFog();
+    document.getElementById("my-webgl-output").appendChild(this.renderer.domElement);
+    this.renderScene();
   }
 
   generateGUI() {
@@ -54,11 +70,11 @@ export class Feb12 {
         this.dx = 0.1;
         this.dy = 5;
         this.dz = 0.2;
-        this.numberOfBuildings = 1500;
+        this.numberOfBuildings = 100;
         this.ambientLightColor = "#0c0c0c";
-        this.fogColor = "#ffffff";
-        this.fogNear = 0.1;
-        this.forFar = 10;
+        this.triangleScale = 1;
+        this.trianglePositionX = 1;
+        this.trianglePositionZ = 1;
       }
     };
 
@@ -66,13 +82,16 @@ export class Feb12 {
 
     gui.add(controls, "rotationSpeed", 0, 0.5);
     gui.add(controls, "spotLightHeight", 0, 100);
-    gui.add(controls, "dx", 0, 5);
-    gui.add(controls, "dy", 0, 15);
-    gui.add(controls, "dz", 0, 5);
-    gui.add(controls, "numberOfBuildings", 0, 2000);
+    gui.add(controls, "dx", 0, 20);
+    gui.add(controls, "dy", 0, 40);
+    gui.add(controls, "dz", 0, 20);
     gui.addColor(controls, "ambientLightColor").onChange(c => {
       this.lights.ambientLight.color = new Color(c);
     });
+
+    gui.add(controls, "triangleScale", 1, 5);
+    gui.add(controls, "trianglePositionX", -10, 10);
+    gui.add(controls, "trianglePositionZ", -10, 10);
 
     this.gui = gui;
     this.controls = controls;
@@ -81,15 +100,6 @@ export class Feb12 {
     document.getElementById("my-stats-output").appendChild(this.stats.domElement);
   }
 
-  main() {
-    this.generateGUI();
-    this.addObjects();
-    this.addBuildings();
-    this.addLights();
-
-    document.getElementById("my-webgl-output").appendChild(this.renderer.domElement);
-    this.renderScene();
-  }
 
   addLights() {
     // ambient light
@@ -146,18 +156,40 @@ export class Feb12 {
     plane.position.z += 10;
     plane.receiveShadow = true;
 
+    // const triangle = new Triangle(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0,0,1));
+    // const triangleMaterial = new MeshLambertMaterial({color: 0xff0000})
+
+    const geom = new Geometry();
+    const v1 = new Vector3(0, 0, 0);
+    const v2 = new Vector3(30, 0, 0);
+    const v3 = new Vector3(30, 30, 0);
+
+    const triangle = new Triangle(v1, v2, v3);
+    const normal = triangle.normal();
+
+    geom.vertices.push(triangle.a);
+    geom.vertices.push(triangle.b);
+    geom.vertices.push(triangle.c);
+
+    geom.faces.push(new Face3(0, 1, 2, normal));
+
+    const triangleMesh = new Mesh(geom, new MeshNormalMaterial());
+
     this.objects = {
       axes,
       redCube,
-      plane
+      plane,
+      triangle: triangleMesh
     };
 
-    this.scene.add(axes, redCube, plane);
+    this.scene.add(axes, redCube, plane, triangleMesh);
   }
 
   addBuildings() {
     // remove objects with BoxGeometry
     this.scene.children = this.scene.children.filter(o => o.geometry.type != "BoxGeometry");
+
+    let buildings = new Object3D();
 
     for (var i = 0; i < this.controls.numberOfBuildings; i++) {
       const dx = Math.random() * this.controls.dx;
@@ -173,8 +205,13 @@ export class Feb12 {
 
       const cube = this.createCubeMLM(geometryVec, 0x8888ff, false, [posVec]);
 
-      this.scene.add(cube);
-    } 
+      buildings.add(cube);
+    }
+    this.scene.add(buildings);
+  }
+
+  addFog(){
+    this.scene.fog = new FogExp2(0xFFFFFF, .01);
   }
 
   @autobind
@@ -250,36 +287,5 @@ export class Feb12 {
     }
 
     return cube;
-  }
-
-  /**
-   * @param {number} radius
-   * @param {number} numWidth
-   * @param {number} numHeight
-   * @param {number} matColor
-   * @param {boolean} isWireframe
-   * @param {[Vector3,Vector3]} transformVecs
-   * @returns {Mesh}
-   * @memberof Feb12
-   */
-  createSphere(radius, numWidth, numHeight, matColor, isWireframe, transformVecs) {
-    // create a sphere
-
-    const sphereGeometry = new SphereGeometry(radius, numWidth, numHeight);
-    const sphereMaterial = new MeshBasicMaterial({
-      color: matColor || 0xffffff,
-      wireframe: isWireframe || false
-    });
-    const sphere = new Mesh(sphereGeometry, sphereMaterial);
-    // position the sphere
-    const [pos, scale] = transformVecs;
-    sphere.position.x = pos.x;
-    sphere.position.y = pos.y;
-    sphere.position.z = pos.z;
-    sphere.scale.x = scale.x;
-    sphere.scale.y = scale.y;
-    sphere.scale.z = scale.z;
-
-    return sphere;
   }
 }
