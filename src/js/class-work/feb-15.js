@@ -23,6 +23,7 @@ import {
 import { Stats } from "three-stats";
 import dat from "dat.gui";
 import autobind from "autobind-decorator";
+import { createCubeMLM, deg2Rad } from "../lib";
 
 export class Feb15 {
   constructor() {
@@ -135,7 +136,7 @@ export class Feb15 {
     const axes = new AxesHelper(30);
 
     // Cube
-    const redCube = this.createCubeMLM(new Vector3(4, 7, 4), 0xff0000, false, [
+    const redCube = createCubeMLM(new Vector3(4, 7, 4), 0xff0000, false, [
       new Vector3(0, 0, 0)
     ]);
     redCube.castShadow = true;
@@ -151,7 +152,7 @@ export class Feb15 {
     plane.scale.x = 2;
     plane.scale.y = 2;
 
-    plane.rotation.x = -this.deg2Rad(90);
+    plane.rotation.x = -deg2Rad(90);
     plane.position.x += 10;
     plane.position.z += 10;
     plane.receiveShadow = true;
@@ -246,46 +247,4 @@ export class Feb15 {
     this.renderer.render(this.scene, this.camera);
   }
 
-  deg2Rad(degrees) {
-    return (degrees || 0) / 180 * Math.PI;
-  }
-
-  /**
-   * @param {Vector3} geometryVec
-   * @param {number} matColor
-   * @param {boolean} isWireframe
-   * @param {[Vector3,Vector3,Vector3]} transformVecs
-   * @returns {Mesh}
-   * @memberof Feb12
-   */
-  createCubeMLM(geometryVec, matColor, isWireframe, transformVecs) {
-    const { x: dx, y: dy, z: dz } = geometryVec;
-    const cubeGeometry = new BoxGeometry(dx || 1, dy || 1, dz || 1);
-    const cubeMaterial = new MeshLambertMaterial({
-      color: matColor || 0xffffff,
-      wireframe: isWireframe || false
-    });
-
-    const cube = new Mesh(cubeGeometry, cubeMaterial);
-
-    const [pos, scale, rotation] = transformVecs;
-    cube.position.x = pos.x;
-    cube.position.y = pos.y;
-    cube.position.z = pos.z;
-
-    if (scale) {
-      cube.scale.x = scale.x || 1;
-      cube.scale.y = scale.y || 1;
-      cube.scale.z = scale.z || 1;
-    }
-
-    if (rotation) {
-      let { x: rx, y: ry, z: rz } = rotation;
-      cube.rotation.x = this.deg2Rad(rx);
-      cube.rotation.y = this.deg2Rad(ry);
-      cube.rotation.z = this.deg2Rad(rz);
-    }
-
-    return cube;
-  }
 }

@@ -1,8 +1,10 @@
 /* eslint-disable max-len */
 
-import Playground from "./js/main";
-import { Feb12, Feb15 } from "./js/class-work/index";
-import { March05 } from "./js/home-work/index";
+// import Playground from "./js/main";
+// import { March29 } from "./js/class-work";
+import { April02 } from "./js/home-work/april-02";
+
+// import {Test01} from './js/tests/test-01'
 
 
 
@@ -45,4 +47,4 @@ if (process.env.DEVTOOLS && process.env.NODE_ENV !== "production") {
 // const playground = new Playground();
 // playground.init();
 
-const classWork = new March05();
+const classWork = new April02();
