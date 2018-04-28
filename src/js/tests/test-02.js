@@ -1,41 +1,24 @@
+import autobind from "autobind-decorator";
+import dat from "dat.gui";
 import {
-  Scene,
-  PerspectiveCamera,
-  WebGLRenderer,
-  SpotLight,
-  AxesHelper,
-  Font,
-  PlaneGeometry,
-  MeshLambertMaterial,
-  TextGeometry,
-  FontLoader,
-  MeshBasicMaterial,
-  Path,
   AmbientLight,
-  SplineCurve,
-  BufferGeometry,
-  LineBasicMaterial,
-  Vector2,
-  Line,
-  BoxGeometry,
-  Vector3,
-  Mesh,
+  AxesHelper,
   Color,
-  SphereGeometry,
-  ShapeGeometry,
-  ExtrudeGeometry,
+  FogExp2,
+  FontLoader,
+  Mesh,
+  MeshLambertMaterial,
   MeshPhongMaterial,
-  Triangle,
-  Geometry,
-  Face3,
-  Shape,
-  MeshNormalMaterial,
   Object3D,
-  FogExp2
+  PerspectiveCamera,
+  PlaneGeometry,
+  Scene,
+  SpotLight,
+  TextGeometry,
+  Vector3,
+  WebGLRenderer
 } from "three";
 import { Stats } from "three-stats";
-import dat from "dat.gui";
-import autobind from "autobind-decorator";
 import { deg2Rad } from "../lib";
 // import helvetikerFont from "../../assets/fonts/helvetiker_regular.typeface";
 
@@ -72,7 +55,9 @@ export class Test02 {
     this.addText();
     this.addLights();
     this.addFog();
-    document.getElementById("my-webgl-output").appendChild(this.renderer.domElement);
+    document
+      .getElementById("my-webgl-output")
+      .appendChild(this.renderer.domElement);
     this.renderScene();
   }
 
@@ -94,7 +79,6 @@ export class Test02 {
 
     const controls = new Controls();
 
-
     const lighting = gui.addFolder("Lighting");
     // lighting.add(controls, "spotLightHeight", 0, 100);
     lighting.addColor(controls, "ambientLightColor").onChange(c => {
@@ -106,8 +90,8 @@ export class Test02 {
       this.camera.position[property] = value;
       this.lights.spotLight.position[property] = value;
 
-      this.camera.lookAt(new Vector3(0,0,0))
-      this.lights.spotLight.lookAt(new Vector3(0,0,0))
+      this.camera.lookAt(new Vector3(0, 0, 0));
+      this.lights.spotLight.lookAt(new Vector3(0, 0, 0));
     };
 
     camera.add(controls, "px", -30, 70).onChange(onCamPosChange("x"));
@@ -120,7 +104,9 @@ export class Test02 {
     this.controls = controls;
 
     this.stats.setMode(0); // 0 => fps, 1=> ms / frame
-    document.getElementById("my-stats-output").appendChild(this.stats.domElement);
+    document
+      .getElementById("my-stats-output")
+      .appendChild(this.stats.domElement);
   }
 
   addLights() {
@@ -140,7 +126,7 @@ export class Test02 {
       ambientLight
     };
 
-    this.scene.add(ambientLight,spotLight);
+    this.scene.add(ambientLight, spotLight);
   }
 
   addObjects() {
@@ -154,8 +140,7 @@ export class Test02 {
 
     // plane.rotation.x = -deg2Rad(90);
     plane.receiveShadow = true;
-    plane.position.add(new Vector3(0,0,-5))
-
+    plane.position.add(new Vector3(0, 0, -5));
 
     this.objects = {
       axes,
@@ -188,9 +173,14 @@ export class Test02 {
 
       const text2 = new TextGeometry("Winter 2018", options);
 
-      const text1Mesh = new Mesh(text1, new MeshPhongMaterial({ color: "#933636" }));
-      const text2Mesh = new Mesh(text2, new MeshPhongMaterial({ color: "#933636" }));
-
+      const text1Mesh = new Mesh(
+        text1,
+        new MeshPhongMaterial({ color: "#933636" })
+      );
+      const text2Mesh = new Mesh(
+        text2,
+        new MeshPhongMaterial({ color: "#933636" })
+      );
 
       console.log(text1Mesh.position);
       // text1Mesh.position.set(origin)
@@ -211,7 +201,10 @@ export class Test02 {
   }
 
   addFog() {
-    this.scene.fog = new FogExp2(this.controls.fogColor, this.controls.fogDensity);
+    this.scene.fog = new FogExp2(
+      this.controls.fogColor,
+      this.controls.fogDensity
+    );
   }
 
   @autobind
@@ -219,7 +212,6 @@ export class Test02 {
     this.frameCount++;
 
     const t = this.frameCount * this.controls.rotationSpeed;
-
 
     this.stats.update();
     requestAnimationFrame(this.renderScene);

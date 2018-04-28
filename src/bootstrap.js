@@ -1,12 +1,14 @@
+
 /* eslint-disable max-len */
 
 // import Playground from "./js/main";
 // import { March29 } from "./js/class-work";
 // import { April02 } from "./js/home-work/april-02";
 // import { April23 } from "./js/class-work/april-23";
+import { April28 } from "./js/home-work/april-28";
 
 // import {Test01} from './js/tests/test-01'
-import { Test02 } from "./js/tests/test-02";
+// import { Test02 } from "./js/tests/test-02";
 
 /**
  * The linter can be disabled via LINTER=false env var - show a message in console to inform if it's on or off
@@ -47,4 +49,4 @@ if (process.env.DEVTOOLS && process.env.NODE_ENV !== "production") {
 // const playground = new Playground();
 // playground.init();
 
-const classWork = new Test02();
+const classWork = new April28();

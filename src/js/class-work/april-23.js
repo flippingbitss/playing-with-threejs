@@ -1,44 +1,34 @@
+import autobind from "autobind-decorator";
+import dat from "dat.gui";
 import {
-  Scene,
-  PerspectiveCamera,
-  WebGLRenderer,
-  SpotLight,
-  AxesHelper,
-  PlaneGeometry,
-  MeshLambertMaterial,
-  MeshBasicMaterial,
-  Path,
   AmbientLight,
-  SplineCurve,
+  AxesHelper,
   BufferGeometry,
-  LineBasicMaterial,
-  Vector2,
-  Line,
-  BoxGeometry,
-  Vector3,
-  Mesh,
   Color,
-  SphereGeometry,
-  ShapeGeometry,
   ExtrudeGeometry,
+  FogExp2,
+  Line,
+  LineBasicMaterial,
+  Mesh,
+  MeshLambertMaterial,
   MeshPhongMaterial,
-  Triangle,
-  Geometry,
-  Face3,
+  Path,
+  PerspectiveCamera,
+  PlaneGeometry,
+  Scene,
   Shape,
-  MeshNormalMaterial,
-  Object3D,
-  FogExp2
+  ShapeGeometry,
+  SplineCurve,
+  SpotLight,
+  Vector2,
+  WebGLRenderer
 } from "three";
 import { Stats } from "three-stats";
-import dat from "dat.gui";
-import autobind from "autobind-decorator";
-import { createSaddle, deg2Rad } from "../lib";
+import { deg2Rad } from "../lib";
 
 export class April23 {
   constructor() {
     this.scene = new Scene();
-
     // Camera
     this.camera = new PerspectiveCamera(75, 4 / 3, 0.1, 1000);
     this.camera.position.x = 30;
@@ -66,7 +56,9 @@ export class April23 {
     this.addShape();
     this.addLights();
     this.addFog();
-    document.getElementById("my-webgl-output").appendChild(this.renderer.domElement);
+    document
+      .getElementById("my-webgl-output")
+      .appendChild(this.renderer.domElement);
     this.renderScene();
   }
 
@@ -100,7 +92,9 @@ export class April23 {
     fog.add(controls, "fogNear", 1, 5).onChange(onFogChange("near"));
     fog.add(controls, "fogFar", 5, 10).onChange(onFogChange("far"));
     fog.add(controls, "fogDensity", 0, 0.03).onChange(onFogChange("density"));
-    fog.addColor(controls, "fogColor").onChange(c => (this.scene.fog.color = new Color(c)));
+    fog
+      .addColor(controls, "fogColor")
+      .onChange(c => (this.scene.fog.color = new Color(c)));
 
     // lighting.open();
     // fog.open();
@@ -108,7 +102,9 @@ export class April23 {
     this.controls = controls;
 
     this.stats.setMode(0); // 0 => fps, 1=> ms / frame
-    document.getElementById("my-stats-output").appendChild(this.stats.domElement);
+    document
+      .getElementById("my-stats-output")
+      .appendChild(this.stats.domElement);
   }
 
   addLights() {
@@ -177,7 +173,11 @@ export class April23 {
     const mesh = new Mesh(geometry, new MeshPhongMaterial());
 
     // Create a sine-like wave
-    const curve = new SplineCurve([new Vector2(-10, 0), new Vector2(-5, 5), new Vector2(0, 0)]);
+    const curve = new SplineCurve([
+      new Vector2(-10, 0),
+      new Vector2(-5, 5),
+      new Vector2(0, 0)
+    ]);
 
     const points = curve.getPoints(50);
     const lineGeometry = new BufferGeometry().setFromPoints(points);
@@ -206,8 +206,8 @@ export class April23 {
     const smiley = new ShapeGeometry(smileyShape);
     const smileyMesh = new Mesh(smiley, new MeshPhongMaterial());
 
-    smileyMesh.scale.set(0.2,.2,.2);
-    smileyMesh.rotateZ(180)
+    smileyMesh.scale.set(0.2, 0.2, 0.2);
+    smileyMesh.rotateZ(180);
     // Create the final object to add to the scene
     const splineObject = new Line(lineGeometry, material);
 
@@ -216,7 +216,10 @@ export class April23 {
   }
 
   addFog() {
-    this.scene.fog = new FogExp2(this.controls.fogColor, this.controls.fogDensity);
+    this.scene.fog = new FogExp2(
+      this.controls.fogColor,
+      this.controls.fogDensity
+    );
   }
 
   @autobind
