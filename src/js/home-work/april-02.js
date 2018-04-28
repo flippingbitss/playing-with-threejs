@@ -30,16 +30,16 @@ export class April02 {
     this.scene = new Scene();
 
     // Camera
-    this.camera = new PerspectiveCamera(45, 4 / 3, 0.1, 1000);
+    this.camera = new PerspectiveCamera(50, 4 / 3, 0.1, 1000);
     this.camera.position.x = 30;
-    this.camera.position.y = 15;
+    this.camera.position.y = 5;
     this.camera.position.z = 10;
-    this.camera.lookAt(this.scene.position);
+    this.camera.lookAt(new Vector3(0,3,0));
 
     // Renderer
     this.renderer = new WebGLRenderer();
     this.renderer.setClearColor(new Color(0xeeeeee));
-    this.renderer.setSize(800, 600);
+    this.renderer.setSize(1000, 800);
     this.renderer.shadowMap.enabled = true;
 
     // Stats
@@ -69,6 +69,7 @@ export class April02 {
         this.rotationSpeed = 0.01;
         this.spotLightHeight = 40;
         this.ambientLightColor = "#c0aaaa";
+        // this.cameraZoom = 1;
         this.fogNear = 1;
         this.fogFar = 5;
         this.fogDensity = 0.025;
@@ -156,16 +157,28 @@ export class April02 {
   }
 
   addFractal() {
-    const v0 = new Vector3(0, 0, -10);
-    const v1 = new Vector3(0, 0, 10);
-    const v2 = new Vector3(10, 0, 0);
-    const v3 = new Vector3(0, 10, 0);
-    const v4 = new Vector3(-10, 0, 0);
+    const size = 10;
+    const v0 = new Vector3(0, 0, -size);
+    const v1 = new Vector3(0, 0, size);
+    const v2 = new Vector3(size, 0, 0);
+    const v3 = new Vector3(0, size, 0);
+    const v4 = new Vector3(-size, 0, 0);
 
-    this.drawSierpinskiGasket(v0, v1, v2, v3, v4, 5);
+    const a0 = new Vector3(0, 0, size);
+    const a1 = new Vector3(0, 0, -size);
+    const a2 = new Vector3(-size, 0, 0);
+    const a3 = new Vector3(0, -size, 0);
+    const a4 = new Vector3(size, 0, 0);
+
+
+    
+
+
+    this.drawPyramid(v0, v1, v2, v3, v4, 5);
+    this.drawPyramid(a0, a1, a2, a3, a4, 5);
   }
 
-  drawSierpinskiGasket(v0, v1, v2, v3, v4, n) {
+  drawPyramid(v0, v1, v2, v3, v4, n) {
     if (n <= 1) {
       // var tetrahedron=getTetrahedron(v0,v1,v2,v3);
       debugger;
@@ -182,11 +195,11 @@ export class April02 {
       const v14 = v1.clone().lerp(v4, 0.5);
       const v34 = v3.clone().lerp(v4, 0.5);
 
-      this.drawSierpinskiGasket(v0, v01, v02, v03, v04, n - 1);
-      this.drawSierpinskiGasket(v04, v14, v01, v34, v4, n - 1);
-      this.drawSierpinskiGasket(v01, v1, v12, v13, v14, n - 1);
-      this.drawSierpinskiGasket(v02, v12, v2, v23, v01, n - 1);
-      this.drawSierpinskiGasket(v03, v13, v23, v3, v34, n - 1);
+      this.drawPyramid(v0, v01, v02, v03, v04, n - 1);
+      this.drawPyramid(v04, v14, v01, v34, v4, n - 1);
+      this.drawPyramid(v01, v1, v12, v13, v14, n - 1);
+      this.drawPyramid(v02, v12, v2, v23, v01, n - 1);
+      this.drawPyramid(v03, v13, v23, v3, v34, n - 1);
     }
   }
 
@@ -207,7 +220,7 @@ export class April02 {
 
     // spotLight.position.set(x * Math.sin(t) - 10, y, z * Math.cos(t) - 10);
 
-    this.scene.rotation.set(0, t, 0);
+    this.scene.rotation.set(0, t, t);
 
     this.stats.update();
     requestAnimationFrame(this.renderScene);

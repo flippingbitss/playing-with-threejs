@@ -10,6 +10,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const myLocalIp = require('my-local-ip');
 const common = require('./common');
+const CopyWebpackPlugin = require("copy-webpack-plugin")
 const plugins = [];
 
 const BANNER = common.getBanner();
@@ -94,6 +95,8 @@ if (OPTIMIZE) {
     }
   }));
 }
+
+plugins.push(new CopyWebpackPlugin([ { from: 'src/assets', to: 'assets' } ]))
 
 if (NODE_ENV !== 'production') {
   // to keep compatibility with old loaders - debug: true was previously on config
